@@ -1,23 +1,27 @@
 clc
 clearvars -except images image
 close all
-%% 
+
+%% parametry
 imageName  = 'test_small.png';
-resultName = 'output.png';
+p_r        = 3;
+s_r        = 6;
+lamda      = .01;
+sigma      = 5;
+r          = 2;
+
 %% 
 f0=imread(imageName);
 f0=double(f0);
 
 [m,n,c]=size(f0);
-  
-p_r=3;
-s_r=6;
+
 p_s=p_r*2+1;
 s_s=s_r*2+1;
 t_r=p_r+s_r;
 
 BrokenAreaColor=255;
-lamda=.01;sigma=5;h=2;
+
 
 kernel=fspecial('gaussian',p_s,sigma);
 
@@ -47,7 +51,7 @@ for step=1:5000
     
     if step==1
         
-        w=updateWeight(u0,u,h,kernel,t_r,s_r,p_r,phi,w);
+        w=updateWeight(u0,u,r,kernel,t_r,s_r,p_r,phi,w);
         
     end
     
@@ -56,7 +60,7 @@ for step=1:5000
         phi=1-((u(:,:,1)==0) & ...
             (u(:,:,2)==BrokenAreaColor) & ...
             (u(:,:,3)==0));
-        w=updateWeight2(u0,u,h,kernel,t_r,s_r,p_r,phi,PHI,w);
+        w=updateWeight2(u0,u,r,kernel,t_r,s_r,p_r,phi,PHI,w);
         
     end
     
@@ -196,7 +200,7 @@ for step=1:5000
     
     if mod(step,10)==0
         
-        imwrite(uint8(u0),[num2str(step) resultName]);
+        imwrite(uint8(u0),[num2str(step) 'output.png']);
 %         figure; imagesc(uint8(u0)); colormap(gray); axis off; axis equal;
 %         pause(1)
 
